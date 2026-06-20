@@ -1,0 +1,55 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install dependencies
+        run: |
+          brew install cmake ninja pkg-config
+
+      - name: Bootstrap vcpkg
+        run: |
+          cd external/vcpkg
+          ./bootstrap-vcpkg.sh
+
+      - name: Configure CMake (iOS)
+        run: |
+          cmake -B build-ios \
+            -DCMAKE_SYSTEM_NAME=iOS \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
+            -GXcode \
+            -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DCMAKE_TOOLCHAIN_FILE=external/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build Vita3K iOS
+        run: |
+          cmake --build build-ios --config Release --target vita3k
+
+      - name: Package artifacts
+        run: |
+          mkdir -p artifacts
+          find build-ios -name "*.dylib" -o -name "vita3k*" | head -10 > artifacts/files.txt || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vita3k-ios
+          path: artifacts/

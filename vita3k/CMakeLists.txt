@@ -173,7 +173,6 @@ if(ANDROID)
 	target_link_libraries(vita3k PRIVATE SDL3::SDL3 pugixml::pugixml android)
 
 	if(CMAKE_BUILD_TYPE STREQUAL "Release")
-		# we need to exclude all symbols except SDL
 		set(LIBS_TO_EXCLUDE
 			"libboost_atomic.a"
 			"libboost_container.a"
@@ -200,6 +199,22 @@ if(ANDROID)
 		endforeach()
 		set_target_properties(vita3k PROPERTIES LINK_FLAGS "${LIBS_TO_EXCLUDE_FLAG}")
 	endif()
+elseif(IOS)
+	add_library(vita3k SHARED
+		ios/app/src/main/objcpp/EmulatorBridge.mm
+		interface.cpp
+		performance.cpp
+	)
+	target_include_directories(vita3k PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	target_link_libraries(vita3k PRIVATE SDL3::SDL3)
+	find_library(MOLTENVK_FRAMEWORK MoltenVK)
+	if(MOLTENVK_FRAMEWORK)
+		target_link_libraries(vita3k PRIVATE ${MOLTENVK_FRAMEWORK})
+	endif()
+	set_target_properties(vita3k PROPERTIES
+		XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
+		XCODE_ATTRIBUTE_DEVELOPMENT_TEAM ""
+	)
 else()
 	add_executable(vita3k MACOSX_BUNDLE main.cpp interface.cpp interface.h performance.cpp)
 endif()
