@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -50,7 +50,7 @@ jobs:
           find build-ios -name "*.dylib" -o -name "vita3k*" | head -10 > artifacts/files.txt || true
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vita3k-ios
           path: artifacts/
