@@ -25,6 +25,16 @@ jobs:
         run: |
           brew install cmake ninja pkg-config
 
+      - name: Fetch MoltenVK iOS dependencies
+        run: |
+          cd external/MoltenVK
+          ./fetchDependencies --ios
+
+      - name: Build MoltenVK for iOS (framework + shader converter toolkit)
+        run: |
+          cd external/MoltenVK
+          make ios
+
       - name: Cache vcpkg binary packages (incremental across runs)
         uses: actions/cache@v4
         with:
