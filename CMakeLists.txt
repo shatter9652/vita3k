@@ -7,10 +7,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
 	set(IOS 1)
 	include("cmake/vcpkg_ios.cmake")
-	set(MVK_IOS ON CACHE BOOL "" FORCE)
-	set(MVK_MACOS OFF CACHE BOOL "" FORCE)
-	set(MVK_BUILD_SHADER_CONVERTER_TOOL OFF CACHE BOOL "" FORCE)
-	add_subdirectory(external/MoltenVK)
+	# MoltenVK is built externally via "make ios" in CI (produces xcframework)
+	# Do not add_subdirectory here — it would try to configure for macOS
 endif()
 
 project(Vita3K)

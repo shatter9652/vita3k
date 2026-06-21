@@ -207,9 +207,13 @@ elseif(IOS)
 	)
 	target_include_directories(vita3k PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(vita3k PRIVATE SDL3::SDL3)
-	find_package(MoltenVK CONFIG QUIET)
-	if(TARGET MoltenVK::MoltenVK)
-		target_link_libraries(vita3k PRIVATE MoltenVK::MoltenVK)
+
+	# Use MoltenVK built by "make ios" in CI
+	set(MOLTENVK_IOS_PATH "${CMAKE_SOURCE_DIR}/external/MoltenVK/Package/Release/MoltenVK.xcframework/ios-arm64")
+	if(EXISTS "${MOLTENVK_IOS_PATH}/MoltenVK.framework")
+		target_link_libraries(vita3k PRIVATE "${MOLTENVK_IOS_PATH}/MoltenVK.framework")
+		target_include_directories(vita3k PRIVATE "${MOLTENVK_IOS_PATH}/MoltenVK.framework/Headers")
+		message(STATUS "Using MoltenVK from external/MoltenVK build")
 	endif()
 	set_target_properties(vita3k PROPERTIES
 		XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
