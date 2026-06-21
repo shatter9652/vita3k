@@ -327,7 +327,9 @@ if(APPLE)
 	target_sources(vita3k PRIVATE ${MOLTENVK_DYLIB})
 	set_source_files_properties(${MOLTENVK_DYLIB} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks)
 
-	qt_finalize_target(vita3k)
+	if(QT_VERSION_MAJOR EQUAL 6)
+		qt_finalize_target(vita3k)
+	endif()
 	if(MACDEPLOYQT_EXECUTABLE)
 		add_custom_command(TARGET vita3k POST_BUILD
 			COMMAND "${MACDEPLOYQT_EXECUTABLE}" "$<TARGET_FILE_DIR:vita3k>/../.." "$<$<CONFIG:Debug,RelWithDebInfo>:-no-strip>")
