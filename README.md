@@ -76,6 +76,38 @@ Thanks go out to people who offered advice or otherwise made this project possib
 Thank you to the supporters and to all those who support us on our [ko-fi](https://ko-fi.com/vita3K).
 * Among them, those who subscribed to the Nibble Tier and upper: **j0hnnybrav0, Mored4u, TacoOblivion, Undeadbob and uplush**
 
+## iOS Port Status (commit a1d62f2)
+
+### ✅ Implemented
+- [x] iOS directory structure + CMake iOS detection (`CMakeLists.txt`)
+- [x] iOS target in `vita3k/CMakeLists.txt` (SHARED lib + MoltenVK via vcpkg)
+- [x] SwiftUI + Metal UI layer (`Vita3KApp.swift`, `ContentView.swift`, `Renderer.swift`)
+- [x] Native bridge (`EmulatorBridge.h/mm`, `NativeLib.swift`)
+- [x] StikDebug JIT hook point (`StikDebugJIT.swift`)
+- [x] "More RAM" feature – Increased Memory Limit + get-task-allow flow
+  - `MoreRAMView.swift` + `MoreRAMViewModel.swift`
+  - StosSign + Anisette login + PATCH to Apple Developer API
+  - Keychain + DataManager scaffolding
+- [x] GitHub Actions CI (`ios-build.yml`)
+  - Ninja + Xcode dual build
+  - vcpkg caching (`actions/cache`)
+  - IPA export path ready
+
+### 🚧 Planned / In Progress
+- [ ] Full Anisette login UI (copy from SideStore/GetMoreRam)
+- [ ] Real Metal/MoltenVK surface creation in MTKView
+- [ ] Input overlay + audio + filesystem iOS implementations
+- [ ] StikDebug JIT entitlement grant at runtime
+- [ ] Proper Xcode project generation / `ExportOptions.plist` signing
+- [ ] App Store / TestFlight distribution (manual signing only)
+
+### 🔜 Future
+- [ ] Native Metal renderer backend (optional, Vulkan via MoltenVK works)
+- [ ] On-device game installation + trophy support
+- [ ] Performance overlays and settings
+
+**Note**: The "More RAM" feature requires the user to log in with the same Apple ID used to sign the app, then re-sign after enabling the capability (same flow as GetMoreRam).
+
 ## Note
 The purpose of this emulator is not to enable illegal activity. You can dump games from a Vita by using [NoNpDrm](https://github.com/TheOfficialFloW/NoNpDrm) or [FAGDec](https://github.com/CelesteBlue-dev/PSVita-RE-tools/tree/master/FAGDec/build). You can get homebrew programs from [VitaDB](https://www.rinnegatamante.eu/vitadb/#/).
 

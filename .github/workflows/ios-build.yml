@@ -51,6 +51,7 @@ jobs:
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GNinja \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DMVK_BUILD_SHADER_CONVERTER_TOOL=OFF \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
       - name: Build Vita3K iOS (Ninja)
@@ -65,6 +66,7 @@ jobs:
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GXcode \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DMVK_BUILD_SHADER_CONVERTER_TOOL=OFF \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
       - name: Archive for IPA

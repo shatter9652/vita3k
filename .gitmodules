@@ -84,3 +84,6 @@
 [submodule "external/substitute"]
 	path = external/substitute
 	url = https://github.com/Vita3K/substitute.git
+[submodule "external/MoltenVK"]
+	path = external/MoltenVK
+	url = https://github.com/KhronosGroup/MoltenVK.git

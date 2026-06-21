@@ -7,6 +7,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
 	set(IOS 1)
 	include("cmake/vcpkg_ios.cmake")
+	option(MVK_BUILD_SHADER_CONVERTER_TOOL ON)
+	add_subdirectory(external/MoltenVK)
 endif()
 
 project(Vita3K)
