@@ -455,7 +455,7 @@ endif()
 # Use XDG desktop portals on Linux
 set(NFD_PORTAL ON)
 
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT IOS)
 	# nativefiledialog-extended
 	add_subdirectory(nativefiledialog-extended)
 
