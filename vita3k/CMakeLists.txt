@@ -106,6 +106,11 @@ if(NOT ANDROID AND NOT IOS)
 	include(${CMAKE_SOURCE_DIR}/cmake/qt6.cmake)
 endif()
 
+if(IOS)
+	set(USE_DISCORD_RICH_PRESENCE OFF CACHE BOOL "" FORCE)
+	set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+endif()
+
 add_subdirectory(app)
 add_subdirectory(audio)
 add_subdirectory(camera)
@@ -201,7 +206,7 @@ if(ANDROID)
 	endif()
 elseif(IOS)
 	add_library(vita3k SHARED
-		ios/app/src/main/objcpp/EmulatorBridge.mm
+		${CMAKE_SOURCE_DIR}/ios/app/src/main/objcpp/EmulatorBridge.mm
 		interface.cpp
 		performance.cpp
 	)
@@ -209,11 +214,13 @@ elseif(IOS)
 	target_link_libraries(vita3k PRIVATE SDL3::SDL3)
 
 	# Use MoltenVK built by "make ios" in CI
-	set(MOLTENVK_IOS_PATH "${CMAKE_SOURCE_DIR}/external/MoltenVK/Package/Release/MoltenVK.xcframework/ios-arm64")
-	if(EXISTS "${MOLTENVK_IOS_PATH}/MoltenVK.framework")
-		target_link_libraries(vita3k PRIVATE "${MOLTENVK_IOS_PATH}/MoltenVK.framework")
-		target_include_directories(vita3k PRIVATE "${MOLTENVK_IOS_PATH}/MoltenVK.framework/Headers")
-		message(STATUS "Using MoltenVK from external/MoltenVK build")
+	if(IOS)
+		set(MOLTENVK_FRAMEWORK_PATH "${CMAKE_SOURCE_DIR}/external/MoltenVK/Package/Release/MoltenVK.xcframework/ios-arm64/MoltenVK.framework")
+		if(EXISTS "${MOLTENVK_FRAMEWORK_PATH}")
+			target_link_libraries(vita3k PRIVATE "${MOLTENVK_FRAMEWORK_PATH}")
+			target_include_directories(vita3k PRIVATE "${MOLTENVK_FRAMEWORK_PATH}/Headers")
+			message(STATUS "Using iOS MoltenVK framework from external/MoltenVK")
+		endif()
 	endif()
 	set_target_properties(vita3k PROPERTIES
 		XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
