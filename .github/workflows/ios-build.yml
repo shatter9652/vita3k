@@ -49,6 +49,7 @@ jobs:
           cmake -B build-ios-ninja \
             -DCMAKE_SYSTEM_NAME=iOS \
             -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_SYSROOT=iphoneos \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GNinja \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
@@ -67,6 +68,7 @@ jobs:
           cmake -B build-ios-xcode \
             -DCMAKE_SYSTEM_NAME=iOS \
             -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_SYSROOT=iphoneos \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GXcode \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
