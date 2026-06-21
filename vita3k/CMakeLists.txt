@@ -102,7 +102,7 @@ if(NOT MSVC)
 	add_compile_options(-Wformat -Werror=format-security)
 endif()
 
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT IOS)
 	include(${CMAKE_SOURCE_DIR}/cmake/qt6.cmake)
 endif()
 
