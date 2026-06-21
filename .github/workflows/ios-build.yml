@@ -53,6 +53,8 @@ jobs:
             -GNinja \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
             -DVCPKG_TARGET_ARCHITECTURE=arm64 \
+            -DMVK_IOS=ON \
+            -DMVK_MACOS=OFF \
             -DMVK_BUILD_SHADER_CONVERTER_TOOL=OFF \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
@@ -68,6 +70,9 @@ jobs:
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GXcode \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DVCPKG_TARGET_ARCHITECTURE=arm64 \
+            -DMVK_IOS=ON \
+            -DMVK_MACOS=OFF \
             -DMVK_BUILD_SHADER_CONVERTER_TOOL=OFF \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
@@ -90,6 +95,16 @@ jobs:
         run: |
           mkdir -p artifacts
           find build-ios -name "*.dylib" -o -name "vita3k*" | head -10 > artifacts/files.txt || true
+
+      - name: Save vcpkg binary cache (even on failure)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ github.workspace }}/external/vcpkg/installed
+            ${{ github.workspace }}/external/vcpkg/packages
+            ${{ github.workspace }}/**/vcpkg_installed
+          key: vcpkg-bin-${{ runner.os }}-arm64-ios-${{ hashFiles('vcpkg.json') }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
