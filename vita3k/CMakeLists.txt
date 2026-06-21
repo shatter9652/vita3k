@@ -243,7 +243,7 @@ if(USE_DISCORD_RICH_PRESENCE)
 	target_link_libraries(vita3k PRIVATE discord-rpc)
 endif()
 
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT IOS)
 	file(GLOB VITA3K_QT_TS_FILES CONFIGURE_DEPENDS
 		"${CMAKE_SOURCE_DIR}/i18n/qt/*.ts")
 	set(VITA3K_QT_QM_DIR "${CMAKE_BINARY_DIR}/qt_translations")
