@@ -25,16 +25,41 @@ jobs:
         run: |
           brew install cmake ninja pkg-config
 
+      - name: Cache vcpkg
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/external/vcpkg
+            ${{ runner.temp }}/.vcpkg
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: 77df67cfff9c12ccfdb52284e07c87c75092f723
           vcpkgJsonGlob: 'vcpkg.json'
           runVcpkgInstall: true
+          vcpkgDirectory: '${{ github.workspace }}/external/vcpkg'
 
-      - name: Configure CMake (iOS)
+      - name: Configure CMake (iOS) - Ninja (fast build)
         run: |
-          cmake -B build-ios \
+          cmake -B build-ios-ninja \
+            -DCMAKE_SYSTEM_NAME=iOS \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
+            -GNinja \
+            -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build Vita3K iOS (Ninja)
+        run: |
+          cmake --build build-ios-ninja --config Release --target vita3k -j$(sysctl -n hw.logicalcpu) -- -v 2>&1 | tail -100
+
+      - name: Configure CMake (iOS) - Xcode (for IPA)
+        run: |
+          cmake -B build-ios-xcode \
             -DCMAKE_SYSTEM_NAME=iOS \
             -DCMAKE_OSX_ARCHITECTURES=arm64 \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
@@ -42,9 +67,20 @@ jobs:
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
-      - name: Build Vita3K iOS
+      - name: Archive for IPA
         run: |
-          cmake --build build-ios --config Release --target vita3k
+          xcodebuild -project build-ios-xcode/Vita3K.xcodeproj \
+            -scheme vita3k \
+            -configuration Release \
+            -archivePath build-ios-xcode/Vita3K.xcarchive \
+            archive
+
+      - name: Export IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build-ios-xcode/Vita3K.xcarchive \
+            -exportPath artifacts \
+            -exportOptionsPlist ios/ExportOptions.plist || true
 
       - name: Package artifacts
         run: |

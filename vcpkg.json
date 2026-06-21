@@ -10,6 +10,7 @@
     "boost-variant",
     "curl",
     "openssl",
-    "zlib"
+    "zlib",
+    "moltenvk"
   ]
 }

@@ -6,9 +6,18 @@ struct AppsListView: View {
 
     var body: some View {
         NavigationView {
-            List(games, id: \.self) { game in
-                Button(game) {
-                    emulator.launchGame(path: game)
+            List {
+                Section("Games") {
+                    ForEach(games, id: \.self) { game in
+                        Button(game) {
+                            emulator.launchGame(path: game)
+                        }
+                    }
+                }
+                Section("Utilities") {
+                    NavigationLink("More RAM (Increased Memory Limit)") {
+                        MoreRAMView()
+                    }
                 }
             }
             .navigationTitle("Vita3K")

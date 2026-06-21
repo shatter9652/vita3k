@@ -3,8 +3,10 @@ cmake_minimum_required(VERSION 3.22)
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 	set(ANDROID 1)
 	set(VCPKG_TARGET_ANDROID 1)
-	# this file must be included before everything else
 	include("cmake/vcpkg_android.cmake")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+	set(IOS 1)
+	include("cmake/vcpkg_ios.cmake")
 endif()
 
 project(Vita3K)

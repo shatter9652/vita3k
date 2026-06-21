@@ -207,9 +207,9 @@ elseif(IOS)
 	)
 	target_include_directories(vita3k PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(vita3k PRIVATE SDL3::SDL3)
-	find_library(MOLTENVK_FRAMEWORK MoltenVK)
-	if(MOLTENVK_FRAMEWORK)
-		target_link_libraries(vita3k PRIVATE ${MOLTENVK_FRAMEWORK})
+	find_package(MoltenVK CONFIG QUIET)
+	if(TARGET MoltenVK::MoltenVK)
+		target_link_libraries(vita3k PRIVATE MoltenVK::MoltenVK)
 	endif()
 	set_target_properties(vita3k PROPERTIES
 		XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
