@@ -25,15 +25,16 @@ jobs:
         run: |
           brew install cmake ninja pkg-config
 
-      - name: Cache vcpkg
+      - name: Cache vcpkg binary packages (incremental across runs)
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/external/vcpkg
-            ${{ runner.temp }}/.vcpkg
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+            ${{ github.workspace }}/external/vcpkg/installed
+            ${{ github.workspace }}/external/vcpkg/packages
+            ${{ github.workspace }}/**/vcpkg_installed
+          key: vcpkg-bin-${{ runner.os }}-arm64-ios-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
-            vcpkg-${{ runner.os }}-
+            vcpkg-bin-${{ runner.os }}-arm64-ios-
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
@@ -51,6 +52,7 @@ jobs:
             -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
             -GNinja \
             -DVCPKG_TARGET_TRIPLET=arm64-ios \
+            -DVCPKG_TARGET_ARCHITECTURE=arm64 \
             -DMVK_BUILD_SHADER_CONVERTER_TOOL=OFF \
             -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
